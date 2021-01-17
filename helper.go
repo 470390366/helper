@@ -38,11 +38,8 @@ func main() {
 			}
 			var result string
 			fmt.Println(v)
-			// if k == 30 {
-			// 	break
-			// }
+
 			result = common.Gettranslate(v)
-			// fmt.Println(result)
 			var translate_res translate
 			err := json.Unmarshal([]byte(result), &translate_res)
 
@@ -50,7 +47,6 @@ func main() {
 
 				panic(err)
 			}
-			// fmt.Println(translate_res.TranslateResult)
 			for _, v := range translate_res.TranslateResult {
 				fmt.Println(v[0]["tgt"])
 				// fmt.Println(strings.Replace(v[0]["tgt"], "\n", "", -1))
