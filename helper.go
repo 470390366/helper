@@ -1,10 +1,19 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"helper/common"
 	"os"
+	"strings"
 )
+
+type translate struct {
+	Type            string                  `json:"type"`
+	ErrorCode       int                     `json:"errorCode"`
+	ElapsedTime     int                     `json:"elapsedTime"`
+	TranslateResult [1][1]map[string]string `json:"translateResult"`
+}
 
 func main() {
 	args := os.Args[1:]
@@ -17,15 +26,38 @@ func main() {
 		common.Help()
 	} else {
 		var arg string
-		for _, v := range args {
-			arg += " " + v
-		}
+		arg = strings.Join(args, " ")
 		out, status := common.Exec_shell(arg)
 		if status != nil {
 			common.Invalid_arg()
 		}
-		fmt.Println(out)
+		countSplit := strings.Split(out, "\n")
+		for _, v := range countSplit {
+			if v == "" {
+				continue
+			}
+			var result string
+			fmt.Println(v)
+			// if k == 30 {
+			// 	break
+			// }
+			result = common.Gettranslate(v)
+			// fmt.Println(result)
+			var translate_res translate
+			err := json.Unmarshal([]byte(result), &translate_res)
 
+			if err != nil {
+
+				panic(err)
+			}
+			// fmt.Println(translate_res.TranslateResult)
+			for _, v := range translate_res.TranslateResult {
+				fmt.Println(v[0]["tgt"])
+				// fmt.Println(strings.Replace(v[0]["tgt"], "\n", "", -1))
+
+			}
+			fmt.Println("------------------------------------------")
+		}
 	}
 
 }
